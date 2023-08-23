@@ -1,5 +1,9 @@
 playGame();
 
+playerScore = 0;
+computerScore = 0;
+gameWinner = "";
+
 function getComputerChoice()
 {
     const shapes = ["rock", "paper", "scissors"];
@@ -22,10 +26,20 @@ function playRound(playerSelection, computerSelection)
             (playerSelection === "paper" && computerSelection === "rock") ||
             (playerSelection === "scissors" && computerSelection === "paper"))
         {
+            playerScore++;
+            if (playerScore === 5)
+            {
+                gameWinner = "Player";
+            }
             return `You won!\nYou: ${playerSelection.toUpperCase()}\nComputer: ${computerSelection.toUpperCase()}`;
         }
         else
         {
+            computerScore++;
+            if (computerScore === 5)
+            {
+                gameWinner = "Computer";
+            }
             return `You lost!\nYou: ${playerSelection.toUpperCase()}\nComputer: ${computerSelection.toUpperCase()}`;
         }
     }
@@ -35,16 +49,32 @@ function playRound(playerSelection, computerSelection)
     }
 }
 
+
 function playGame()
 {
-    let playerSelection = "";
-    let computerSelection = "";
+    const body = document.querySelector('body');
+    const buttons = document.querySelectorAll('button');
+    const resultsDiv = document.querySelector('.results');
+    const lastestResult = document.createElement('p');
+    const currentScore = document.createElement('p');
+    const winner = document.createElement('h2');
 
-    for (let i = 0; i < 5; i++)
+    resultsDiv.appendChild(lastestResult);
+    resultsDiv.appendChild(currentScore);
+    body.appendChild(winner);
+
+    buttons.forEach((button) =>
     {
-        playerSelection = prompt("What's your choice? Rock, paper or scissors?");
-        computerSelection = getComputerChoice();
-
-        console.log(`Result of round ${i + 1}: ${playRound(playerSelection, computerSelection)}`);
-    }
+        button.addEventListener('click', () =>
+        {
+            lastestResult.textContent = playRound(button.textContent, getComputerChoice())
+            currentScore.textContent = `Player: ${playerScore} Computer ${computerScore}`;
+            if (playerScore === 5 || computerScore === 5)
+            {
+                winner.textContent = `Winner: ${gameWinner}`;
+                playerScore = 0;
+                computerScore = 0;
+            }
+        });
+    });
 }
